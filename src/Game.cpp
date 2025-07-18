@@ -27,11 +27,7 @@ void Game::mainGame() {
     while (true) {
         board.drawBoard();
 
-        if (switchPlayer) {
-            player = first;
-        } else {
-            player = second;
-        }
+        player = (switchPlayer)? first : second;
 
         int oldPosition;
         int newPosition;
@@ -40,11 +36,11 @@ void Game::mainGame() {
 
 
         // swap the switch player if move is done correctly
-        if (player.movePlayer(oldPosition , newPosition , board)) {
+        if (board.movePlayer(oldPosition , newPosition , player)) {
             switchPlayer = (switchPlayer == true)? false : true;
         }
         if (board.winningShapes(player.getSymbol())) {
-            std::cout << "the winner is: " << first.getUsername() << std::endl;
+            std::cout << "the winner is: " << player.getUsername() << std::endl;
             return;
         }
     }

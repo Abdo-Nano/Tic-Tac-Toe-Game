@@ -17,11 +17,21 @@ private:
     int rows = 3;
     int cols = 3;
     std::unordered_map<int , std::pair<int , int>> moves;
+
+
+    std::pair<int, int> getPlayerCoordinates(int position);
+    bool isPlayersOwnPiece(const std::pair<int, int>& coordinates, User& user) const;
+    bool isPlaceOccupied(const std::pair<int, int>& coordinates , User& user) const;
+    bool isMoveOutOfBounds(int oldPosition, int newPosition) const;
+    void applyMove(int oldPosition, int newPosition , User& user);
+
+
 public:
     Board();
     void drawBoard();
     void resetBoard();
     bool winningShapes(char player);
+    bool movePlayer(int oldPosition , int newPosition , User& user);
     friend class User;
 };
 

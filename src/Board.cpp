@@ -4,6 +4,7 @@
 
 #include "../include/Board.h"
 
+#include "../include/User.h"
 
 
 Board::Board():
@@ -93,3 +94,59 @@ bool Board::winningShapes(char player) {
 
     return false;
 }
+
+bool Board::isMoveOutOfBounds(int oldPosition, int newPosition) const {
+    return moves.find(oldPosition) == moves.end() ||
+       moves.find(newPosition) == moves.end();
+}
+
+
+std::pair<int , int> Board::getPlayerCoordinates(int position) {
+    return moves[position];
+}
+
+bool Board::isPlayersOwnPiece(const std::pair<int, int> &coordinates, User& user) const{
+    return board[coordinates.first][coordinates.second] != user.getSymbol();
+}
+
+bool Board::isPlaceOccupied(const std::pair<int, int>& newCoordinates , User& user)const {
+    char otherPlayer = (user.getSymbol() == 'o')? 'x' : 'o';
+    return board[newCoordinates.first][newCoordinates.second] == otherPlayer
+    || board[newCoordinates.first][newCoordinates.second] == user.getSymbol();
+}
+
+void Board::applyMove(int oldPosition, int newPosition , User& user) {
+
+    std::pair<int , int> oldCoordinates = getPlayerCoordinates(oldPosition);
+    std::pair<int , int> newCoordinates = getPlayerCoordinates(newPosition);
+
+    board[oldCoordinates.first][oldCoordinates.second] = oldPosition + '0';
+    board[newCoordinates.first][newCoordinates.second] = user.getSymbol();
+}
+
+
+
+bool Board::movePlayer(int oldPosition, int newPosition ,User& user) {
+    if (isMoveOutOfBounds(oldPosition , newPosition)) {
+        std::cout << "Out of the boundaries of the board." << std::endl;
+        return false;
+    }
+
+    std::pair<int , int> oldCoordinates = getPlayerCoordinates(oldPosition);
+    std::pair<int , int> newCoordinates = getPlayerCoordinates(newPosition);
+
+    if (isPlaceOccupied(newCoordinates ,user)) {
+        std::cout << "enter empty place number" << std::endl;
+        return false;
+    }
+
+    if (isPlayersOwnPiece(oldCoordinates, user)) {
+        std::cout << "just move your own yard" << std::endl;
+        return false;
+    }
+
+    applyMove(oldPosition , newPosition , user);
+    return true;
+}
+
+
